@@ -8,11 +8,18 @@
 <body>
     <h1>Simplex Solver</h1>
 
-    <form>
-        <label>Número de Variáveis:</label>
-        <input type="number" id="var-num" min="1">
+    <form id="calculate">
+        <div>
+            <label>fo MAX:</label>
+            <input type="text" id="fo" required>
+        </div>
 
-        <label>Número de Restrições</label>
+        <div>
+            <label>s.t:</label>
+            <textarea id="st" required></textarea>
+        </div>
+
+        <button type="submit">Calcular</button>
     </form>
 
     <script type="text/javascript" src="../static/index.js"></script>
