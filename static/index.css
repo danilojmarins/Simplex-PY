@@ -1,0 +1,62 @@
+body {
+    font-family: 'Gothic A1', sans-serif;
+    background-color: #F5F5F5;
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+    font-weight: 700;
+    margin: 3rem auto;
+    text-align: center;
+}
+
+form {
+    background-color: #FFF;
+    width: 400px;
+    margin: auto;
+    padding: 2rem;
+    display: flex;
+    flex-flow: column nowrap;
+    row-gap: 2rem;
+    align-items: left;
+    border: 1px solid #DDD;
+    border-radius: 5px;
+}
+
+.form-option {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: left;
+}
+
+input, textarea {
+    border: 1px solid #999;
+    border-radius: 3px;
+    padding: 10px;
+    font: inherit;
+    resize: none;
+}
+
+textarea {
+    height: 125px;
+}
+
+button {
+    font: inherit;
+    cursor: pointer;
+}
+
+.results {
+    width: 400px;
+    margin: 2rem auto;
+}
+
+.solution {
+    color: #4CBB17;
+    font-weight: 700;
+}
+
+.error {
+    color: #FF0000;
+}

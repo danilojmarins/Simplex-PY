@@ -1,7 +1,8 @@
 class Simplex:
     
-    def __init__(self):
+    def __init__(self, incognitas: list):
         self.table = []
+        self.incognitas = incognitas
 
     # Adiciona função objetivo à tabela
     def set_objective_function(self, fo: list):
@@ -83,3 +84,20 @@ class Simplex:
             for j in range(len(self.table[0])):
                 print(f"{self.table[i][j]}\t", end="")
             print()
+
+    def get_results(self) -> dict:
+        solution = self.table[0][-1]
+        incognitas_result = {}
+        for i in range(len(self.table) - 1):
+            if self.table[i+1][i+1] == 1:
+                incognitas_result[self.incognitas[i]] = self.table[i+1][-1]
+        
+        for j in range(len(self.incognitas)):
+            if self.incognitas[j] not in incognitas_result:
+                incognitas_result[self.incognitas[j]] = 0
+        
+        results = {}
+        results['result'] = solution
+        results['incognitas'] = incognitas_result
+
+        return results

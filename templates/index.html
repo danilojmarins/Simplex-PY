@@ -4,23 +4,43 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simplex</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="../static/index.css">
 </head>
 <body>
     <h1>Simplex Solver</h1>
 
     <form id="calculate">
-        <div>
+        <div class="form-option">
             <label>fo MAX:</label>
             <input type="text" id="fo" required>
         </div>
 
-        <div>
+        <div class="form-option">
             <label>s.t:</label>
             <textarea id="st" required></textarea>
         </div>
 
         <button type="submit">Calcular</button>
     </form>
+
+    <div class="results">
+        <p id="result"></p>
+
+        <div id="incognitas">
+
+        </div>
+
+        <div id="errors">
+            
+        </div>
+    </div>
 
     <script type="text/javascript" src="../static/index.js"></script>
 </body>

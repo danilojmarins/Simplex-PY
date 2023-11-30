@@ -3,12 +3,13 @@ document.getElementById('calculate').addEventListener('submit', async (e) => {
 
     const fo = document.getElementById('fo').value;
     const st = document.getElementById('st').value;
+    const errors = document.getElementById('errors');
 
-    const foCoeficients = fo.replaceAll(' ', '').match(/[-+]?\d+/g).map(value => parseInt(value) * -1);
+    const foCoeficients = fo.replaceAll(' ', '').match(/[-+]?\d+[a-zA-Z]/g).map(value => parseInt(value) * -1);
     const foIncognits = fo.replaceAll(' ', '').match(/[a-zA-Z]/g);
 
     if (foCoeficients.length !== foIncognits.length) {
-        console.error('fo errada');
+        errors.innerHTML = `<p class="error">N° de coeficientes e incógnitas da FO não batem</p>`;
     }
 
     const incognitIndexMap = {};
@@ -17,6 +18,8 @@ document.getElementById('calculate').addEventListener('submit', async (e) => {
     });
 
     const model = {};
+
+    model['incognitas'] = foIncognits;
 
     const stRestrictions = st.split("\n");
 
@@ -35,16 +38,29 @@ document.getElementById('calculate').addEventListener('submit', async (e) => {
         const symbol = restriction.match(/(<=)/g);
 
         if (!symbol) {
-            console.error('Restrição deve ser <=');
+            errors.innerHTML = `<p class="error">Restrições devem ser <= apenas</p>`;
             return;
         }
 
-        const restrictionCoeficients = restriction.replaceAll(' ', '').match(/[-+]?\d[a-zA-Z]+/g).map(value => parseInt(value));
+        const notImplicitIngonit = restriction.replaceAll(' ', '').match(/[-+]?\d+[a-zA-Z]/g).map(value => value[value.length - 1]);
+
+        const restrictionCoeficients = restriction.replaceAll(' ', '').match(/[-+]?\d+[a-zA-Z]/g).map(value => parseInt(value));
         const restrictionIncognits = restriction.replaceAll(' ', '').match(/[a-zA-Z]/g);
         const restrictionValue = restriction.replaceAll(' ', '').match(/[-+]?\d+$/g);
 
-        if (restrictionCoeficients.length !== restrictionIncognits.length) {
-            console.error('restriction errada');
+        const implicitValues = [];
+
+        restrictionIncognits.forEach((incognit) => {
+            if (notImplicitIngonit.includes(incognit)) {
+                implicitValues.push(restrictionCoeficients[notImplicitIngonit.indexOf(incognit)]);
+            }
+            else {
+                implicitValues.push(1);
+            }
+        })
+
+        if (implicitValues.length !== restrictionIncognits.length) {
+            errors.innerHTML = `<p class="error">N° de coeficientes e incógnitas da restrição não batem</p>`;
         }
 
         foRow.push(0);
@@ -55,7 +71,7 @@ document.getElementById('calculate').addEventListener('submit', async (e) => {
             stRow[i] = 0;
         }
         restrictionIncognits.forEach((incognit, i) => {
-            stRow[incognitIndexMap[incognit]] = restrictionCoeficients[i];
+            stRow[incognitIndexMap[incognit]] = implicitValues[i];
         });
         stRow[stRow.length - 1] = parseInt(restrictionValue[0]);
         stRow[1 + foIncognits.length + i] = 1; // Variáveis de Folga
@@ -73,11 +89,24 @@ document.getElementById('calculate').addEventListener('submit', async (e) => {
         },
         body: JSON.stringify(model)
     })
-    .then(response => response.json())
-    .then(data => console.log(data))
+    .then(async (response) => {
+        const result = await response.json();
+
+        document.getElementById('result').innerHTML = `
+            Solução Ótima: <span class="solution">${result.result}</span>
+        `;
+        
+        errors.innerHTML = '';
+
+        document.getElementById('incognitas').innerHTML = '';
+
+        Object.keys(result.incognitas).forEach(incognita => {
+            document.getElementById('incognitas').innerHTML += `
+                <p>${incognita} = <span class="solution">${result.incognitas[incognita]}</span></p>
+            `;
+        });
+    })
     .catch(err => {
         console.error(err);
     });
-
-    console.log({model});
 });
