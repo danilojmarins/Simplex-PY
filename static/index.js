@@ -1,4 +1,4 @@
-document.getElementById('calculate').addEventListener('submit', (e) => {
+document.getElementById('calculate').addEventListener('submit', async (e) => {
     e.preventDefault();
 
     const fo = document.getElementById('fo').value;
@@ -29,6 +29,8 @@ document.getElementById('calculate').addEventListener('submit', (e) => {
         foRow.push(coeficient);
     });
 
+    model['restrictions'] = [];
+
     stRestrictions.forEach((restriction, i) => {
         const symbol = restriction.match(/(<=)/g);
 
@@ -58,11 +60,24 @@ document.getElementById('calculate').addEventListener('submit', (e) => {
         stRow[stRow.length - 1] = parseInt(restrictionValue[0]);
         stRow[1 + foIncognits.length + i] = 1; // Variáveis de Folga
     
-        model['r'+i] = stRow;
+        model['restrictions'].push(stRow);
     });
 
     foRow.push(0);
     model['fo'] = foRow;
+
+    await fetch('http://127.0.0.1:5000/simplex', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(model)
+    })
+    .then(response => response.json())
+    .then(data => console.log(data))
+    .catch(err => {
+        console.error(err);
+    });
 
     console.log({model});
 });
