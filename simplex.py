@@ -88,13 +88,25 @@ class Simplex:
     def get_results(self) -> dict:
         solution = self.table[0][-1]
         incognitas_result = {}
-        for i in range(len(self.table) - 1):
-            if self.table[i+1][i+1] == 1:
-                incognitas_result[self.incognitas[i]] = self.table[i+1][-1]
+        tracked_indexes = []
+        i = 1
+        j = 1
+
+        while i < len(self.incognitas) + 1:
+            while j < len(self.table):
+                if self.table[j][i] == 1:
+                    if j not in tracked_indexes:
+                        incognitas_result[self.incognitas[i-1]] = self.table[j][-1]
+                        tracked_indexes.append(j)
+                j += 1
+            i += 1
+            j = 1
         
-        for j in range(len(self.incognitas)):
-            if self.incognitas[j] not in incognitas_result:
-                incognitas_result[self.incognitas[j]] = 0
+        for r in range(len(self.incognitas)):
+            if self.incognitas[r] not in incognitas_result:
+                print(f"{incognitas_result}")
+                print(f"{self.incognitas[r]}")
+                incognitas_result[self.incognitas[r]] = 0
         
         results = {}
         results['result'] = solution

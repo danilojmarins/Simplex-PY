@@ -102,7 +102,7 @@ document.getElementById('calculate').addEventListener('submit', async (e) => {
 
         Object.keys(result.incognitas).forEach(incognita => {
             document.getElementById('incognitas').innerHTML += `
-                <p>${incognita} = <span class="solution">${result.incognitas[incognita]}</span></p>
+                <p>${incognita} = <span class="solution">${Math.round(result.incognitas[incognita] * 100) / 100}</span></p>
             `;
         });
     })
